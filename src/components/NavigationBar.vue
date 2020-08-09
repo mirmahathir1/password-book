@@ -1,10 +1,13 @@
 <template>
     <b-navbar toggleable="lg" type="dark" variant="primary">
+        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
         <b-navbar-brand :to="'/home'">Password Book</b-navbar-brand>
-
+        <b-button pill variant="outline-light" v-if="$route.name==='Home'" :disabled="$store.getters.getAllEntryLoadingFlag" @click="$store.dispatch('getEntries')">
+            <b-icon icon="arrow-clockwise"></b-icon>
+        </b-button>
 <!--        <b-button @click="$store.dispatch('getEntries')">Demo Button</b-button>-->
 
-        <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
+
         <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav class="ml-auto">
                 <b-nav-item right :to="'/firebase'">Firebase</b-nav-item>

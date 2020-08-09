@@ -217,7 +217,7 @@
             }
         },
         mounted() {
-            this.$store.dispatch('getEntries');
+
         }
     }
 </script>

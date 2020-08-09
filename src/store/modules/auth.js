@@ -58,6 +58,7 @@ const actions = {
 
                 // redirect user to home after successful login
                 router.push({name:'Home'});
+                dispatch('getEntries');
             })
             .catch((error) => {
                 console.log(error.response);
