@@ -5,6 +5,7 @@ const state = {
     idToken: null,
     userId: null,
     password: null,
+    email:null,
 
     //FLAGS
     signInFlag:false,
@@ -15,14 +16,13 @@ const mutations = {
         state.idToken = userData.token;
         state.userId = userData.userId;
         state.password = userData.password;
+        state.email = userData.email;
     },
     resetAuth(state){
         state.idToken = null;
         state.userId = null;
         state.password= null;
-    },
-    changePassword(state,newPassword){
-        state.password = newPassword;
+        state.email= null;
     },
     signInFlagOn(state){
         state.signInFlag=true;
@@ -47,11 +47,16 @@ const actions = {
         })
             .then((response) => {
                 console.log(response);
+
+                //save the token to vuex
                 commit('authUser', {
                     token: response.data.idToken,
                     userId: response.data.localId,
                     password: authData.password,
+                    email: authData.email
                 });
+
+                // redirect user to home after successful login
                 router.push({name:'Home'});
             })
             .catch((error) => {
@@ -67,35 +72,50 @@ const actions = {
             })
     },
     logout({commit,dispatch}){
+        // reset token, email, password, userId and loaded entries
         commit('resetAuth');
         commit('resetEntries');
+
+        //redirect user to login screen
         router.push({name: 'Login'});
+
+        // notify user that he/she is logged out
         dispatch('notify',"You have been logged out");
     },
     resetPassword({commit,getters,dispatch},newPassword){
+        //turn on spinner
         commit('passwordChangeFlagOn');
-        console.log("Newpassword:",newPassword);
+
         axios.post('/v1/accounts:update?key=' + getters.getAPIKey, {
             idToken: getters.getToken,
             password: newPassword,
-            returnSecureToken: false,
+            returnSecureToken: true,
         })
             .then((response) => {
                 console.log(response);
-                commit('changePassword',newPassword);
+
+                // save the new created token
+                commit('authUser', {
+                    token: response.data.idToken,
+                    userId: getters.userId,
+                    password: newPassword,
+                    email: getters.getEmail
+                });
+
+                // go back to home screen if password change is successful
                 router.push({name:'Home'});
+
+                // dispatch a notification for successful password change
                 dispatch('notify',"Password changed succesfully");
-                // commit('authUser', {
-                //     token: response.data.idToken,
-                //     userId: response.data.localId,
-                //     password: authData.password,
-                // });
-                // router.push({name:'Home'});
+
             })
             .catch((error) => {
-                dispatch('notify',"Password change unsuccessful");
-                // console.log(error.response.statusText);
-                // dispatch('notify',error.response.statusText);
+                console.log(error.response);
+                if(error.response && error.response.data && error.response.data.error && error.response.data.error.message ) {
+                    dispatch('notify', error.response.data.error.message);
+                }else{
+                    dispatch('notify',error.response.statusText);
+                }
             })
             .finally(()=>{
                 commit('passwordChangeFlagOff');
@@ -120,6 +140,9 @@ const getters = {
     },
     getPasswordChangeFlag: state=>{
         return state.passwordChangeFlag;
+    },
+    getEmail: state =>{
+        return state.email;
     }
 };
 
