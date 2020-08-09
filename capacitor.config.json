@@ -1,0 +1,14 @@
+{
+  "appId": "com.example.app",
+  "appName": "password-vue",
+  "bundledWebRuntime": false,
+  "npmClient": "npm",
+  "webDir": "dist",
+  "plugins": {
+    "SplashScreen": {
+      "launchShowDuration": 0
+    }
+  },
+  "linuxAndroidStudioPath": "/home/mahathir/Softwares/android-studio/bin/studio.sh",
+  "cordova": {}
+}

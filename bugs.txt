@@ -1,0 +1,1 @@
+clipboard doesn't get updated after editing username password
