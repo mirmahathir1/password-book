@@ -8,6 +8,9 @@ import 'bootstrap/dist/css/bootstrap.css'
 import 'bootstrap-vue/dist/bootstrap-vue.css'
 import Clipboard from 'v-clipboard'
 import Vuelidate from "vuelidate";
+import VueClipboard from 'vue-clipboard2'
+
+Vue.use(VueClipboard);
 
 Vue.use(Vuelidate);
 

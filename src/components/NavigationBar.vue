@@ -5,8 +5,6 @@
         <b-button pill variant="outline-light" v-if="$route.name==='Home'" :disabled="$store.getters.getAllEntryLoadingFlag" @click="$store.dispatch('getEntries')">
             <b-icon icon="arrow-clockwise"></b-icon>
         </b-button>
-<!--        <b-button @click="$store.dispatch('getEntries')">Demo Button</b-button>-->
-
 
         <b-collapse id="nav-collapse" is-nav>
             <b-navbar-nav class="ml-auto">
