@@ -1,5 +1,5 @@
 <template>
-    <div role="tablist">
+    <div role="tablist" data-aos="fade-down">
         <!--        NEW ENTRY-->
         <b-card no-body class="mb-1" bg-variant="dark" text-variant="light" border-variant="secondary" align="center">
             <b-card-header header-tag="header" class="p-1" role="tab">
@@ -16,7 +16,8 @@
 
         <!--        SPINNER FOR LOADING ALL ENTRIES-->
         <b-card no-body class="mb-1" bg-variant="dark"
-                text-variant="light" border-variant="secondary" v-if="$store.getters.getAllEntryLoadingFlag">
+                text-variant="light" border-variant="secondary" v-if="$store.getters.getAllEntryLoadingFlag"
+                data-aos="fade-down">
             <b-card-body>
                 <b-card-text>
                     <div class="d-flex justify-content-center mb-3">
@@ -27,7 +28,7 @@
         </b-card>
 
         <!--        EXISTING ENTRY-->
-        <template v-else>
+        <template v-else data-aos="fade-down">
             <b-card no-body class="mb-1" v-for="(key,index) in Object.keys($store.getters.getEntries)" :key="key"
                     bg-variant="dark"
                     text-variant="light" border-variant="secondary">
@@ -41,15 +42,15 @@
                         <b-card-text>{{$store.getters.getEntries[key].username}}</b-card-text>
                     </b-card-body>
                     <b-card-footer>
-                        <b-button variant="outline-primary" class="mr-3"
+                        <b-button variant="outline-primary" class="m-1"
                                   @click="copyUsername(key)">
                             Username
                         </b-button>
-                        <b-button v-if="$store.getters.getEntries[key].password" variant="outline-primary" class="mr-3"
+                        <b-button v-if="$store.getters.getEntries[key].password" variant="outline-primary" class="m-1"
                                   @click="copyPassword(key)">
                             Password
                         </b-button>
-                        <b-button variant="outline-primary" class="mr-3"
+                        <b-button variant="outline-primary" class="m-1"
                                   @click="editClicked(key,$store.getters.getEntries[key])">Edit
                         </b-button>
                     </b-card-footer>
@@ -129,7 +130,9 @@
                     <b-form-invalid-feedback id="newpassword-feedback newpassword-help">
                         New password must have more than 3 characters
                     </b-form-invalid-feedback>
-                    <b-form-text id="newpassword-help">{{entryId===null?'No password will be saved if this field is left blank':'Old password will be kept if this field is left blank'}}</b-form-text>
+                    <b-form-text id="newpassword-help">
+                        {{entryId===null?'No password will be saved if this field is left blank':'Old password will be kept if this field is left blank'}}
+                    </b-form-text>
                 </b-form-group>
                 <b-form-group
                         id="input-group-4"
@@ -190,6 +193,7 @@
 
 <script>
     import {minLength, required, sameAs} from 'vuelidate/lib/validators'
+    import {encryptWithAES,decryptWithAES} from "../crypto";
 
     export default {
         name: 'Home',
@@ -264,18 +268,18 @@
             copyUsername(key) {
                 let self = this;
                 this.$copyText(this.$store.getters.getEntries[key].username).then(function (e) {
-                    self.$store.dispatch('notify',"Copied username");
+                    self.$store.dispatch('notify', "Copied username");
                 }, function (e) {
-                    self.$store.dispatch('notify',"Can not copy username");
+                    self.$store.dispatch('notify', "Can not copy username");
                 })
 
             },
-            copyPassword(key){
+            copyPassword(key) {
                 let self = this;
                 this.$copyText(this.$store.getters.getEntries[key].password).then(function (e) {
-                    self.$store.dispatch('notify',"Copied password");
+                    self.$store.dispatch('notify', "Copied password");
                 }, function (e) {
-                    self.$store.dispatch('notify',"Can not copy password");
+                    self.$store.dispatch('notify', "Can not copy password");
                 })
             },
             saveEntry() {
@@ -312,15 +316,14 @@
             },
             editClicked(entryId, entry) {
                 this.$v.$reset();
-
                 this.title = entry.title;
                 this.username = entry.username;
                 this.password = entry.password;
 
                 this.entryId = entryId;
-                if(this.entryId===null){
-                    this.changePasswordFlag=true;
-                }else {
+                if (this.entryId === null) {
+                    this.changePasswordFlag = true;
+                } else {
                     this.changePasswordFlag = false;
                 }
 
@@ -330,7 +333,6 @@
             },
             saveNewEntry() {
                 let data = {
-
                     title: this.title,
                     username: this.username,
                     password: this.newPassword,
@@ -339,6 +341,9 @@
             }
         },
         mounted() {
+            // console.log(decryptWithAES(encryptWithAES("mahathir","123"),"123"));
+
+
 
         }
     }

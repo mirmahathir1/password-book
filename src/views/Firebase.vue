@@ -1,5 +1,5 @@
 <template>
-    <b-jumbotron border-variant="secondary" bg-variant="dark" text-variant="light">
+    <b-jumbotron border-variant="secondary" bg-variant="dark" text-variant="light" data-aos="fade-down">
 
             <h4>Firebase Settings</h4>
 

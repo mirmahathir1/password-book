@@ -1,7 +1,8 @@
 import axios from 'axios';
-import {getUserSpecificEntries} from "../../mixins";
+import {decryptMultipleEntries, encryptMultipleEntries, encryptOneEntry} from "../../crypto";
 
 let baseURL = 'https://password-note.firebaseio.com';
+
 
 const state = {
     //FLAGS
@@ -46,7 +47,11 @@ const actions = {
     },
     saveNewEntry({commit,getters,dispatch}, entry) {
         commit('loadingOn');
-        axios.post(baseURL+'/entries/'+getters.userId+'.json?auth='+getters.getToken,entry)
+
+        //ENCRYPTION
+        let encryptedNewEntry = encryptOneEntry(entry,getters.getPassword);
+
+        axios.post(baseURL+'/entries/'+getters.userId+'.json?auth='+getters.getToken,encryptedNewEntry)
             .then((response)=>{
                 dispatch('notify',"Successfully saved new entry");
                 dispatch('saveNewEntryLocal',{entry:entry,entryId:response.data.name});
@@ -67,9 +72,14 @@ const actions = {
             .then((response)=>{
                 console.log(response);
                 if(response.data!==null) {
-                    commit('setEntries', response.data);
+
+                    // DECRYPTION
+                    let decryptedEntries = decryptMultipleEntries(response.data,getters.getPassword);
+
+                    // commit('setEntries', response.data);
+                    commit('setEntries', decryptedEntries);
                 }
-                // commit('setEntries',getUserSpecificEntries(response.data,getters.userId));
+
             })
             .catch((error)=>{
                 dispatch('notify',"Couldn't load existing entries");
@@ -112,7 +122,11 @@ const actions = {
 
     editEntry({commit,getters,dispatch},editedEntry){
         commit('loadingOn');
-        axios.patch(baseURL+'/entries/'+getters.userId+'.json?auth='+getters.getToken,editedEntry)
+
+        //ENCRYPTION
+        let encrypedEntries = encryptMultipleEntries(editedEntry,getters.getPassword);
+
+        axios.patch(baseURL+'/entries/'+getters.userId+'.json?auth='+getters.getToken,encrypedEntries)
             .then((response)=>{
                 dispatch('editEntryLocal',editedEntry);
                 dispatch('notify',"Successfully edited entry");

@@ -1,5 +1,5 @@
 <template>
-    <b-jumbotron bg-variant="dark" text-variant="light" border-variant="secondary">
+    <b-jumbotron bg-variant="dark" text-variant="light" border-variant="secondary" data-aos="fade-down">
         <h4>Profile</h4>
         <b-form>
             <b-form-group
@@ -43,14 +43,14 @@
             </b-form-group>
 
 
-            <b-button variant="outline-primary" class="mr-3" @click="saveClicked" :disabled="$store.getters.getPasswordChangeFlag || $v.$anyError">
+            <b-button variant="outline-primary" class="m-1" @click="saveClicked" :disabled="$store.getters.getPasswordChangeFlag || $v.$anyError">
                 <span v-if="!$store.getters.getPasswordChangeFlag">Change Password</span>
                 <template v-else>
                     <b-spinner small></b-spinner>
                     <span>Changing...</span>
                 </template>
             </b-button>
-            <b-button type="reset" variant="outline-danger" to="/home">Discard Changes</b-button>
+            <b-button class="m-1" type="reset" variant="outline-danger" to="/home">Discard Changes</b-button>
         </b-form>
     </b-jumbotron>
 </template>

@@ -1,5 +1,5 @@
 <template>
-    <b-jumbotron bg-variant="dark" text-variant="light" border-variant="secondary">
+    <b-jumbotron bg-variant="dark" text-variant="light" border-variant="secondary" data-aos="fade-down">
         <h4>Login</h4>
         <b-form>
 
