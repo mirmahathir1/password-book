@@ -41,11 +41,11 @@
                         <b-card-text>{{$store.getters.getEntries[key].username}}</b-card-text>
                     </b-card-body>
                     <b-card-footer>
-                        <b-button v-if="$store.getters.getEntries[key].username" variant="outline-primary" class="mr-3"
+                        <b-button variant="outline-primary" class="mr-3"
                                   @click="copyUsername(key)">
                             Username
                         </b-button>
-                        <b-button variant="outline-primary" class="mr-3"
+                        <b-button v-if="$store.getters.getEntries[key].password" variant="outline-primary" class="mr-3"
                                   @click="copyPassword(key)">
                             Password
                         </b-button>
@@ -104,6 +104,7 @@
                 </b-form-group>
                 <b-form-group
                         id="input-group-5"
+                        v-if="entryId!==null"
                 >
                     <b-form-checkbox id="input-5" v-model="changePasswordFlag" name="check-button" switch>
                         Change password
@@ -125,9 +126,10 @@
                             :state="isNewPasswordValid"
                             aria-describedby="newpassword-feedback"
                     ></b-form-input>
-                    <b-form-invalid-feedback id="newpassword-feedback">
+                    <b-form-invalid-feedback id="newpassword-feedback newpassword-help">
                         New password must have more than 3 characters
                     </b-form-invalid-feedback>
+                    <b-form-text id="newpassword-help">{{entryId===null?'No password will be saved if this field is left blank':'Old password will be kept if this field is left blank'}}</b-form-text>
                 </b-form-group>
                 <b-form-group
                         id="input-group-4"
@@ -163,7 +165,7 @@
                 </b-button>
 
                 <!--                DELETE ENTRY-->
-                <b-button variant="outline-danger" v-b-modal.deletion-modal>Delete</b-button>
+                <b-button variant="outline-danger" v-b-modal.deletion-modal v-if="entryId!==null">Delete</b-button>
                 <b-modal id="deletion-modal" title="Confirm Deletion" hide-footer body-bg-variant="dark"
                          header-bg-variant="dark" header-border-variant="secondary"
                          header-text-variant="light" body-text-variant="light">
@@ -215,7 +217,6 @@
                 minLen: minLength(4)
             },
             newPassword: {
-                // required,
                 minLen: minLength(4)
             },
             confirmPassword: {
@@ -310,10 +311,19 @@
                 this.$store.dispatch('deleteEntry', this.entryId);
             },
             editClicked(entryId, entry) {
+                this.$v.$reset();
+
                 this.title = entry.title;
                 this.username = entry.username;
                 this.password = entry.password;
+
                 this.entryId = entryId;
+                if(this.entryId===null){
+                    this.changePasswordFlag=true;
+                }else {
+                    this.changePasswordFlag = false;
+                }
+
                 this.newPassword = null;
                 this.confirmPassword = null;
                 this.$bvModal.show('modal')
@@ -333,3 +343,7 @@
         }
     }
 </script>
+
+<style>
+
+</style>
