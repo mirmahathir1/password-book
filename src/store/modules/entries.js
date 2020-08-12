@@ -1,6 +1,7 @@
 import axios from 'axios';
 import {decryptMultipleEntries, encryptMultipleEntries, encryptOneEntry} from "../../crypto";
 
+
 let baseURL = 'https://password-note.firebaseio.com';
 
 
@@ -76,7 +77,6 @@ const actions = {
                     // DECRYPTION
                     let decryptedEntries = decryptMultipleEntries(response.data,getters.getPassword);
 
-                    // commit('setEntries', response.data);
                     commit('setEntries', decryptedEntries);
                 }
 
@@ -116,7 +116,6 @@ const actions = {
     editEntryLocal({commit,getters,dispatch},editedEntry){
         let entries = {...getters.getEntries};
         entries={...entries,...editedEntry};
-        // entries[Object.keys(editedEntry)[0]]=editedEntry[Object.keys(editedEntry)[0]]
         commit('setEntries',entries);
     },
 
@@ -124,9 +123,9 @@ const actions = {
         commit('loadingOn');
 
         //ENCRYPTION
-        let encrypedEntries = encryptMultipleEntries(editedEntry,getters.getPassword);
+        let encryptedEntries = encryptMultipleEntries(editedEntry,getters.getPassword);
 
-        axios.patch(baseURL+'/entries/'+getters.userId+'.json?auth='+getters.getToken,encrypedEntries)
+        axios.patch(baseURL+'/entries/'+getters.userId+'.json?auth='+getters.getToken,encryptedEntries)
             .then((response)=>{
                 dispatch('editEntryLocal',editedEntry);
                 dispatch('notify',"Successfully edited entry");
@@ -143,7 +142,35 @@ const actions = {
     },
     resetEntries({commit,getters,dispatch}){
         commit('resetEntries');
+    },
+
+    patchAllEntriesOfUser({commit,getters,dispatch}){
+        let encryptedEntries = {...getters.getEntries};
+        encryptedEntries = encryptMultipleEntries(encryptedEntries,getters.getPassword);
+        let allEncryptedUserData = {
+            [getters.userId]: encryptedEntries
+        }
+
+        axios.patch(baseURL+'/entries.json?auth='+getters.getToken,allEncryptedUserData)
+            .then((response)=>{
+
+                console.log(response);
+
+                // go back to home screen if password change is successful
+                dispatch('goToRoute','Home');
+
+                // dispatch a notification for successful password change
+                dispatch('notify',"Password changed succesfully");
+
+            })
+            .catch((error)=>{
+                console.log(error);
+            })
+            .finally(()=>{
+                commit('passwordChangeFlagOff');
+            })
     }
+
 };
 const getters = {
     getEntrySaveFlag: state => {

@@ -104,8 +104,8 @@
         methods: {
             enterClicked() {
                 // this.email = 'mirmahathir1@gmail.com';
-                this.email = 'azadsumaiya00@gmail.com';
-                this.password = '123456';
+                // this.email = 'azadsumaiya00@gmail.com';
+                // this.password = '123456';
 
                 // CHECK WHETHER FORM INPUTS HAVE ANY ERRORS
                 this.$v.$touch();

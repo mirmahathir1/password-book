@@ -1,5 +1,5 @@
 import axios from "axios";
-import router from '../../router'
+
 const state = {
     //STORAGE
     idToken: null,
@@ -57,7 +57,8 @@ const actions = {
                 });
 
                 // redirect user to home after successful login
-                router.push({name:'Home'});
+
+                dispatch('goToRoute','Home');
                 dispatch('getEntries');
             })
             .catch((error) => {
@@ -78,7 +79,8 @@ const actions = {
         commit('resetEntries');
 
         //redirect user to login screen
-        router.push({name: 'Login'});
+
+        dispatch('goToRoute','Login');
 
         // notify user that he/she is logged out
         dispatch('notify',"You have been logged out");
@@ -103,11 +105,7 @@ const actions = {
                     email: getters.getEmail
                 });
 
-                // go back to home screen if password change is successful
-                router.push({name:'Home'});
-
-                // dispatch a notification for successful password change
-                dispatch('notify',"Password changed succesfully");
+                dispatch('patchAllEntriesOfUser');
 
             })
             .catch((error) => {
@@ -119,7 +117,7 @@ const actions = {
                 }
             })
             .finally(()=>{
-                commit('passwordChangeFlagOff');
+
             })
     }
 };
