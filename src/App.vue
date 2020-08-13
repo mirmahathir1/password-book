@@ -16,18 +16,6 @@
             return {}
         },
         mounted() {
-            let encrypted = encryptWithAES("mahathir","123");
-
-            console.log(decryptWithAES(encrypted,"123"));
-
-            encrypted = encryptWithAES("mahathir","123");
-
-            console.log(decryptWithAES(null,"123"));
-
-            console.log(decryptWithAES(null,"123"));
-
-
-
             this.fetchAPIKey();
             document.addEventListener("backbutton", this.yourCallBackFunction, false);
         },
