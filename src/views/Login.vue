@@ -111,7 +111,12 @@
             }
         },
         mounted(){
+
             this.options = JSON.parse(localStorage.getItem('savedEmails'));
+            if(this.options===null){
+                this.options=[];
+                localStorage.setItem('savedEmails',JSON.stringify(this.options));
+            }
             // localStorage.setItem('savedEmails',JSON.stringify([]));
 
         },
