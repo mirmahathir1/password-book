@@ -193,7 +193,8 @@
 
 <script>
     import {minLength, required, sameAs} from 'vuelidate/lib/validators'
-    import {encryptWithAES,decryptWithAES} from "../crypto";
+    import {encryptWithAES, decryptWithAES, decryptMultipleEntries} from "../crypto";
+    import axios from "axios";
 
     export default {
         name: 'Home',
@@ -341,7 +342,7 @@
             }
         },
         mounted() {
-            // console.log(decryptWithAES(encryptWithAES("mahathir","123"),"123"));
+
         }
     }
 </script>
