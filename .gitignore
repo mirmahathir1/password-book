@@ -24,3 +24,5 @@ pnpm-debug.log*
 apiKey.txt
 android
 
+#Electron-builder output
+/dist_electron
